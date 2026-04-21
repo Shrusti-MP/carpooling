@@ -1,0 +1,36 @@
+CREATE DATABASE IF NOT EXISTS carpool_db;
+USE carpool_db;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS rides (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    driver_id INT NOT NULL,
+    source VARCHAR(100) NOT NULL,
+    destination VARCHAR(100) NOT NULL,
+    ride_date DATE NOT NULL,
+    ride_time TIME NOT NULL,
+    available_seats INT NOT NULL,
+    price_per_seat DECIMAL(10, 2) NOT NULL,
+    vehicle_name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (driver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ride_id INT NOT NULL,
+    passenger_id INT NOT NULL,
+    seats_booked INT NOT NULL,
+    booking_status VARCHAR(20) DEFAULT 'CONFIRMED', 
+    booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE,
+    FOREIGN KEY (passenger_id) REFERENCES users(id) ON DELETE CASCADE
+);
